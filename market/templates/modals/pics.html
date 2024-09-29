@@ -1,0 +1,52 @@
+<div class="modal fade" id="PicItem-{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="PicItem" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content" style="color:white">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Images for {{ item.name }}</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">×</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            {% if item.images %}
+              {% if current_user.id == item.owner %}
+                  <!-- Display existing images with remove buttons -->
+                  <div class="form-group row m-1">
+                    {% for picture in item.images %}
+                        <div class="col-md-3 mb-3"> <!-- Added column div for better layout -->
+                            <img src="{{ url_for('static', filename='image_pics/' ~ item.id ~ '/' ~ picture.image_name) }}" 
+                                 class="img-thumbnail" alt="Item Image" style="width: 100%;">
+                            <form action="{{ url_for('items.remove_image', image_id=picture.id) }}" method="POST" style="margin-top: 10px;"> <!-- Form for the button -->
+                              <button type="submit" class="btn btn-danger btn-block">Remove</button> <!-- Added btn-block for full width -->
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+              {%else %}
+                {% for pic in item.images %}
+                  <br>
+                  <img src="{{ url_for('static', filename='image_pics/' ~ item.id ~ '/' ~ pic.image_name) }}" alt="Item Image">
+                  <br>
+                {% endfor %}
+              {% endif %}
+
+            {% else %}
+              <h2>No Images exist</h2>
+            {% endif %}
+
+          </div>        
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>
+
+<style>
+  .modal-body img {
+      max-width: 95%; /* Allows the image to scale down with the div */
+      height: auto;    /* Maintains the aspect ratio */
+      display: block;  /* Prevents bottom whitespace */
+  }
+</style>

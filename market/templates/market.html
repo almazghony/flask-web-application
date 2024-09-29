@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}
+  {{ type|capitalize }} Market Page
+{% endblock %}
+
+{% block content %}
+<div style="margin: 20px">
+
+    <!-- Category Selection Links -->
+    <div class="mb-3 text-center">
+        <a href="{{ url_for('items.market_page', category='electronics') }}" class="btn btn-primary mx-2">Electronics</a>
+        <a href="{{ url_for('items.market_page', category='clothes') }}" class="btn btn-primary mx-2">Clothes</a>
+    </div>
+
+    <!-- Check if we have selected a category -->
+    {% if type %}
+        <br><h2 class="text-center text-white">Available {{ type | capitalize }} Items</h2><br>
+
+        <!-- Filtering Form -->
+        <form method="GET" action="{{ url_for('items.market_page', category=type) }}" class="form-inline mb-3 justify-content-center">
+            
+            <input type="hidden" name="category" value="{{ type }}">
+
+            <label for="priceRange" class="mr-2 text-white font-weight-bold">Price Range:</label>
+            <select name="priceRange" id="priceRange" class="form-control mr-2">
+                <option value="">Select</option>
+                <option value="1" {% if request.args.get('priceRange') == '1' %}selected{% endif %}>Under $50</option>
+                <option value="2" {% if request.args.get('priceRange') == '2' %}selected{% endif %}>$50 - $100</option>
+                <option value="3" {% if request.args.get('priceRange') == '3' %}selected{% endif %}>Over $100</option>
+            </select>
+
+            <label for="location" class="mr-2 text-white font-weight-bold">Location:</label>
+            <input type="text" name="location" id="location" class="form-control mr-2" placeholder="Enter Location" value="{{ request.args.get('location', '') }}">
+
+            <label for="delivery" class="mr-2 text-white font-weight-bold">Delivery:</label>
+            <select name="delivery" id="delivery" class="form-control mr-2">
+                <option value="">Any</option>
+                <option value="Yes" {% if request.args.get('delivery') == 'Yes' %}selected{% endif %}>Yes</option>
+                <option value="No" {% if request.args.get('delivery') == 'No' %}selected{% endif %}>No</option>
+            </select>
+
+            <button type="submit" class="btn btn-success">Filter</button>
+        </form>
+
+        <!-- Item Display -->
+        <div class="col-md">
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Location</th>
+                        <th scope="col">Delivery</th>
+                        <th scope="col">Options</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in market_items %}
+                        {% include 'modals/info.html' %}
+                        {% include 'modals/pics.html' %}
+                        <tr>
+                            <td>{{ item.id }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.price }}$</td>
+                            <td>{{ item.location }}</td>
+                            <td>{{ item.delivery }}</td>
+                            <td>
+                                <button class="btn btn-outline btn-info" data-toggle="modal" data-target="#MoreInfo-{{ item.id }}">More Info</button>
+                                <button class="btn btn-outline btn-success" data-toggle="modal" data-target="#PicItem-{{ item.id }}">Pictures</button>
+                                <a href="{{ url_for('users.owner_profile', owner_id=item.id) }}" class="btn btn-outline btn-success">Owner</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <!-- Default view: show categories if no type is selected -->
+        <h2 class="text-center text-white">Select a Category to Explore Items</h2>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    h2, p {
+        color: white; /* Ensures text is visible against the dark background */
+    }
+
+    label {
+        font-weight: bold;
+    }
+</style>
+
+{% endblock %}

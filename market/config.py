@@ -4,6 +4,8 @@ class Config:
     # Database configuration
     SQLALCHEMY_DATABASE_URI = 'sqlite:///market.db'
 
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'your_default_secret_key')  # Replace with a strong key
+
     # Security settings
     SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT', 'default_salt_value')  # Replace with a secure value
 

@@ -1,7 +1,7 @@
 import os
 
 class Config:
-   sqlite:///market.db   'sqlite:///market.db'
+   SQLALCHEMY_DATABASE_URI = 'sqlite:///market.db'
    SECURITY_PASSWORD_SALT = os.environ.get('SECURITY_PASSWORD_SALT')
    MAIL_SERVER = 'smtp.gmail.com'
    MAIL_PORT = 587
